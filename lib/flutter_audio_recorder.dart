@@ -74,6 +74,10 @@ class FlutterAudioRecorder {
     return _channel.invokeMethod('pause');
   }
 
+  Future resume() async {
+    return _channel.invokeMethod('resume');
+  }
+
   Future<Recording> stop() async {
     Map<String, Object> response =
         Map.from(await _channel.invokeMethod('stop'));

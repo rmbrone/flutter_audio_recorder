@@ -42,6 +42,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             let dic = call.arguments as! [String : Any]
             mExtension = dic["extension"] as? String ?? ""
             mPath = dic["path"] as? String ?? ""
+            print("m:", mExtension, mPath)
             startTime = Date()
             if mPath == "" {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
@@ -73,9 +74,6 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             audioRecorder.updateMeters()
             audioRecorder.stop()
             
-            
-            
-            
             let duration = Int(Date().timeIntervalSince(startTime as Date) * 1000)
             isRecording = false
             var recordingResult = [String : Any]()
@@ -89,9 +87,16 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             
             audioRecorder = nil
             result(recordingResult)
-        case "isRecording":
-            print("isRecording")
-            result(isRecording)
+        case "pause":
+            print("pause")
+            audioRecorder.pause()
+            
+            result(nil)
+        case "resume":
+            print("resume")
+            audioRecorder.record()
+            
+            result(nil)
         case "hasPermissions":
             print("hasPermissions")
             switch AVAudioSession.sharedInstance().recordPermission(){

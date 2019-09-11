@@ -6,23 +6,23 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - flutter_audio_recorder (from `.symlinks/plugins/flutter_audio_recorder/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   flutter_audio_recorder:
     :path: ".symlinks/plugins/flutter_audio_recorder/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
-  flutter_audio_recorder: 999bc6ac33287b318b2bd6f30d30552e0376237d
+  Flutter: c07ea686ea8940dc75f09e821939d5673da0f1b8
+  flutter_audio_recorder: f8ac159a64b77baa9147e176fea7a2fab70da1ba
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
 
-PODFILE CHECKSUM: 097b64e1c00903a097fa4231dd174c10dfb3b629
+PODFILE CHECKSUM: 1684eb5a3603bbff42054fc5031250e7ae86cfe4
 
 COCOAPODS: 1.7.2
