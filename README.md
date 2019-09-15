@@ -4,6 +4,16 @@ Flutter Audio Record Plugin that supports `Record` `Pause` `Resume` `Stop` and p
 
 <img src="https://user-images.githubusercontent.com/10917606/64927086-b2bcda00-d838-11e9-9ab8-bad78a95f02c.gif" width="30%" height="30%" />
 
+## Installation
+add `flutter_audio_recorder` to your `pubspec.yaml`
+
+## iOS Permission 
+add usage description to plist
+```
+<key>NSMicrophoneUsageDescription</key>
+<string>Can We Use Your Microphone Please</string>
+```
+
 ## Usage
 
 #### Init (run this before `start`, so we could check if file with given name already exists)
