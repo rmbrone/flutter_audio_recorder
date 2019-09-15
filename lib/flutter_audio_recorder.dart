@@ -214,8 +214,6 @@ class Recording {
   AudioMetering metering;
   // Is currently recording
   RecordingStatus status;
-  // Record completed
-  bool completed = false;
 }
 
 class AudioMetering {
