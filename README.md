@@ -1,4 +1,7 @@
 # flutter_audio_recorder
+<p align="left">
+  <a href="https://pub.dartlang.org/packages/flutter_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_audio_recorder.svg?style=flat-square"></a>
+</p>
 
 Flutter Audio Record Plugin that supports `Record` `Pause` `Resume` `Stop` and provide access to audio level metering properties `average power` `peak power`(currently for iOS only)
 
