@@ -3,12 +3,14 @@ import UIKit
 import AVFoundation
 
 public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRecorderDelegate {
-    var isRecording = false
+    // status - unset, initialized, recording, paused, stopped
+    var status = "unset"
     var hasPermissions = false
     var mExtension = ""
     var mPath = ""
     var channel = 0
     var startTime: Date!
+    var settings: [String:Int]!
     var audioRecorder: AVAudioRecorder!
     
     public static func register(with registrar: FlutterPluginRegistrar) {
@@ -21,12 +23,15 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
         switch call.method {
         case "current":
             print("current")
-            let dic = call.arguments as! [String : Any]
-            channel = dic["channel"] as? Int ?? 0
-            if(isRecording) {
-                audioRecorder.updateMeters()
+            
+            if audioRecorder == nil {
+                result(nil)
+            } else {
+                let dic = call.arguments as! [String : Any]
+                channel = dic["channel"] as? Int ?? 0
                 
-                let duration = Int(Date().timeIntervalSince(startTime as Date) * 1000)
+                audioRecorder.updateMeters()
+                let duration = Int(audioRecorder.currentTime * 1000)
                 var recordingResult = [String : Any]()
                 recordingResult["duration"] = duration
                 recordingResult["path"] = mPath
@@ -34,11 +39,12 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 recordingResult["peakPower"] = audioRecorder.peakPower(forChannel: channel)
                 recordingResult["averagePower"] = audioRecorder.averagePower(forChannel: channel)
                 recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
-                recordingResult["isRecording"] = isRecording
+                recordingResult["status"] = status
                 result(recordingResult)
             }
-        case "start":
-            print("start")
+        case "init":
+            print("init")
+            
             let dic = call.arguments as! [String : Any]
             mExtension = dic["extension"] as? String ?? ""
             mPath = dic["path"] as? String ?? ""
@@ -49,52 +55,95 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 mPath = documentsPath + "/" + String(Int(startTime.timeIntervalSince1970)) + ".m4a"
                 print("path: " + mPath)
             }
-            let settings = [
+            
+            settings = [
                 AVFormatIDKey: getOutputFormatFromString(mExtension),
                 AVSampleRateKey: 12000,
                 AVNumberOfChannelsKey: 1,
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
+            
             do {
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
                 try AVAudioSession.sharedInstance().setActive(true)
-                
                 audioRecorder = try AVAudioRecorder(url: URL(string: mPath)!, settings: settings)
                 audioRecorder.delegate = self
                 audioRecorder.isMeteringEnabled = true
-                audioRecorder.record()
+                audioRecorder.prepareToRecord()
             } catch {
                 print("fail")
-                result(FlutterError(code: "", message: "Failed to record", details: nil))
+                result(FlutterError(code: "", message: "Failed to init", details: nil))
             }
-            isRecording = true
-            result(nil)
-        case "stop":
-            print("stop")
-            audioRecorder.updateMeters()
-            audioRecorder.stop()
             
-            let duration = Int(Date().timeIntervalSince(startTime as Date) * 1000)
-            isRecording = false
+            let duration = Int(audioRecorder.currentTime * 1000)
+            status = "initialized"
             var recordingResult = [String : Any]()
             recordingResult["duration"] = duration
             recordingResult["path"] = mPath
             recordingResult["audioFormat"] = mExtension
-            recordingResult["peakPower"] = audioRecorder.peakPower(forChannel: channel)
-            recordingResult["averagePower"] = audioRecorder.averagePower(forChannel: channel)
+            recordingResult["peakPower"] = 0
+            recordingResult["averagePower"] = 0
             recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
-            recordingResult["isRecording"] = isRecording
+            recordingResult["status"] = status
             
-            audioRecorder = nil
             result(recordingResult)
+        case "start":
+            print("start")
+            
+            if status == "initialized" {
+                audioRecorder.record()
+                status = "recording"
+            }
+            
+            result(nil)
+            
+        case "stop":
+            print("stop")
+            
+            if audioRecorder == nil || status == "unset" {
+                result(nil)
+            } else {
+                audioRecorder.updateMeters()
+                audioRecorder.stop()
+                
+                let duration = Int(audioRecorder.currentTime * 1000)
+                status = "stopped"
+                var recordingResult = [String : Any]()
+                recordingResult["duration"] = duration
+                recordingResult["path"] = mPath
+                recordingResult["audioFormat"] = mExtension
+                recordingResult["peakPower"] = audioRecorder.peakPower(forChannel: channel)
+                recordingResult["averagePower"] = audioRecorder.averagePower(forChannel: channel)
+                recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
+                recordingResult["status"] = status
+                
+                audioRecorder = nil
+                result(recordingResult)
+            }
         case "pause":
             print("pause")
-            audioRecorder.pause()
+            
+            if audioRecorder == nil {
+                result(nil)
+            }
+            
+            if status == "recording" {
+                audioRecorder.pause()
+                status = "paused"
+            }
             
             result(nil)
         case "resume":
             print("resume")
-            audioRecorder.record()
+            
+            if audioRecorder == nil {
+                result(nil)
+            }
+            
+            if status == "paused" {
+                audioRecorder.record()
+                status = "recording"
+            }
             
             result(nil)
         case "hasPermissions":

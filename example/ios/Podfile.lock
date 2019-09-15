@@ -19,7 +19,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider/ios"
 
 SPEC CHECKSUMS:
-  Flutter: c07ea686ea8940dc75f09e821939d5673da0f1b8
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_audio_recorder: f8ac159a64b77baa9147e176fea7a2fab70da1ba
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
 

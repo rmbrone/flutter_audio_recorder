@@ -60,16 +60,26 @@ class FlutterAudioRecorder {
     }
     _path = path;
     _extension = extension;
+
+    Map<String, Object> response;
+    var result = await _channel
+        .invokeMethod('init', {"path": _path, "extension": _extension});
+
+    if (result != false) {
+      response = Map.from(result);
+    }
+
     _recording = new Recording();
+    _recording.status = _stringToRecordingStatus(response['status']);
+
+    return;
   }
 
   Future start() async {
-    // _recording.isRecording = true;
-    return _channel
-        .invokeMethod('start', {"path": _path, "extension": _extension});
+    return _channel.invokeMethod('start');
   }
 
-  /// Use [current] to get latest state of recording after [pause]
+  /// Note: Use [current] to get latest state of recording after [pause]
   Future pause() async {
     return _channel.invokeMethod('pause');
   }
@@ -79,19 +89,26 @@ class FlutterAudioRecorder {
   }
 
   Future<Recording> stop() async {
-    Map<String, Object> response =
-        Map.from(await _channel.invokeMethod('stop'));
+    Map<String, Object> response;
+    var result = await _channel.invokeMethod('stop');
 
-    _responseToRecording(response);
+    if (result != null) {
+      response = Map.from(result);
+      _responseToRecording(response);
+    }
 
     return recording;
   }
 
   Future<Recording> current({int channel = 0}) async {
-    Map<String, Object> response =
-        Map.from(await _channel.invokeMethod('current', {"channel": channel}));
+    Map<String, Object> response;
 
-    _responseToRecording(response);
+    var result = await _channel.invokeMethod('current', {"channel": channel});
+
+    if (result != null) {
+      response = Map.from(result);
+      _responseToRecording(response);
+    }
 
     return recording;
   }
@@ -105,6 +122,8 @@ class FlutterAudioRecorder {
     util - response msg to recording object.
    */
   void _responseToRecording(Map<String, Object> response) {
+    if (response == null) return;
+
     _recording.duration = new Duration(milliseconds: response['duration']);
     _recording.path = response['path'];
     _recording.audioFormat = _stringToAudioFormat(response['audioFormat']);
@@ -113,7 +132,7 @@ class FlutterAudioRecorder {
         peakPower: response['peakPower'],
         averagePower: response['averagePower'],
         isMeteringEnabled: response['isMeteringEnabled']);
-    _recording.isRecording = response['isRecording'];
+    _recording.status = _stringToRecordingStatus(response['status']);
   }
 
   /*
@@ -160,6 +179,26 @@ class FlutterAudioRecorder {
         return ".m4a";
     }
   }
+
+  /*
+    util - Convert String to Enum
+   */
+  static RecordingStatus _stringToRecordingStatus(String status) {
+    switch (status) {
+      case "unset":
+        return RecordingStatus.Unset;
+      case "initialized":
+        return RecordingStatus.Initialized;
+      case "recording":
+        return RecordingStatus.Recording;
+      case "paused":
+        return RecordingStatus.Paused;
+      case "stopped":
+        return RecordingStatus.Stopped;
+      default:
+        return RecordingStatus.Unset;
+    }
+  }
 }
 
 class Recording {
@@ -174,7 +213,7 @@ class Recording {
   // Metering
   AudioMetering metering;
   // Is currently recording
-  bool isRecording = false;
+  RecordingStatus status;
   // Record completed
   bool completed = false;
 }
@@ -187,4 +226,15 @@ class AudioMetering {
   AudioMetering({this.peakPower, this.averagePower, this.isMeteringEnabled});
 }
 
-enum AudioFormat { AAC, WAV }
+enum RecordingStatus {
+  Unset,
+  Initialized,
+  Recording,
+  Paused,
+  Stopped,
+}
+
+enum AudioFormat {
+  AAC,
+  WAV,
+}
