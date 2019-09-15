@@ -3,47 +3,47 @@
   <a href="https://pub.dartlang.org/packages/flutter_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_audio_recorder.svg?style=flat-square"></a>
 </p>
 
-English | [简体中文](./README-zh_CN.md)
+[English](./README.md) | 简体中文
 
-Flutter Audio Record Plugin that supports `Record` `Pause` `Resume` `Stop` and provide access to audio level metering properties `average power` `peak power`(currently for iOS only)
+Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时获取到底层提供的音频信息（如声音强度）.
 
 <img src="https://user-images.githubusercontent.com/10917606/64927086-b2bcda00-d838-11e9-9ab8-bad78a95f02c.gif" width="30%" height="30%" />
 
-## Installation
-add `flutter_audio_recorder` to your `pubspec.yaml`
+## 安装方式
+加入 `flutter_audio_recorder` 到你的 `pubspec.yaml`
 
-## iOS Permission 
-add usage description to plist
+## iOS权限 
+加一条到 plist
 ```
 <key>NSMicrophoneUsageDescription</key>
 <string>Can We Use Your Microphone Please</string>
 ```
 
-## Usage
+## 用法
 
-#### Init (run this before `start`, so we could check if file with given name already exists)
+#### Init初始化 (在`录音前`, 调用`初始化`方法，检查文件有无重复)
 ```
 var recorder = FlutterAudioRecorder("filename", AudioFormat.AAC);
 await _recorder.initialized;
 ```
-or
+或者
 ```
 var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a
 await _recorder.initialized;
 ```
 
-#### Start recording
+#### Start开始录音
 ```
 await recorder.start();
 var recording = await recorder.current(channel: 0);
 ```
 
-#### Get recording details
+#### Current获取当前录音状态信息
 ```
 var current = await recording.current(channel: 0);
 // print(current.status);
 ```
-You could use a timer to access details every 50ms(simply cancel the timer when recording is done)
+设置一个Timer，定期获取信息（录音结束后，记得`cancel`）
 ```
 new Timer.periodic(tick, (Timer t) async {
         var current = await recording.current(channel: 0);
@@ -53,6 +53,7 @@ new Timer.periodic(tick, (Timer t) async {
       });
 ```
 
+#### 录音状态 - 数据结构
 ##### Recording
 | Name  | Description |
 | ------------- | ------------- |
@@ -63,35 +64,35 @@ new Timer.periodic(tick, (Timer t) async {
 | metering  | AudioMetering  |
 | status  | RecordingStatus  |
 
-##### Recording.metering
+##### Recording.metering （声音强度）
 | Name  | Description |
 | ------------- | ------------- |
-| peakPower  | double  |
-| averagePower  | double  |
-| isMeteringEnabled  | bool  |
+| peakPower  | double, 强度极值  |
+| averagePower  | double, 强度平均值  |
+| isMeteringEnabled  | bool, 是否启用（True）  |
 
 ##### Recording.status
 `Unset`,`Initialized`,`Recording`,`Paused`,`Stopped`
 
 
-#### Pause
+#### Pause暂停录音
 ```
 await _recorder.pause();
 ```
 
-#### Resume
+#### Resume继续录音
 ```
 await _recorder.resume();
 ```
 
-#### Stop (after `stop`, run `init` again to create another recording)
+#### Stop停止录音 (停止之后 `stop`, 需再次执行 `init` 重新指定新的文件名，以创建新的录音)
 ```
 var result = await _recorder.stop();
 File file = widget.localFileSystem.file(result.path);
 ```
 
 ## Example
-Please check example app using Xcode.
+用Xcode打开Example项目可以查看示例
 
 
 ## Getting Started
