@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:file/local.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:path/path.dart' as p;
 
@@ -19,7 +20,7 @@ class FlutterAudioRecorder {
   Future get initialized => _initRecorder;
   Recording get recording => _recording;
 
-  FlutterAudioRecorder(String path, AudioFormat audioFormat) {
+  FlutterAudioRecorder(String path, {AudioFormat audioFormat}) {
     _initRecorder = _init(path, audioFormat);
   }
 
@@ -29,13 +30,14 @@ class FlutterAudioRecorder {
     if (path != null) {
       // Extension(.xyz) of Path
       extensionInPath = p.extension(path);
+      print("extensionInPath : $extensionInPath");
       // Use AudioFormat
       if (audioFormat != null) {
         // .m4a != .m4a
         if (_stringToAudioFormat(extensionInPath) != audioFormat) {
           // use AudioOutputFormat
           extension = _audioFormatToString(audioFormat);
-          path += extension;
+          path = p.withoutExtension(path) + extension;
         } else {
           extension = p.extension(path);
         }
