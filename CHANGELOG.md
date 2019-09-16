@@ -1,3 +1,7 @@
+## 0.2.1
+
+* Simplify usage example for initialize recorder.
+
 ## 0.2.0
 
 * Fix issue of init method.
