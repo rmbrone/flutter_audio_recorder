@@ -1,6 +1,8 @@
 # flutter_audio_recorder
 <p align="left">
   <a href="https://pub.dartlang.org/packages/flutter_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_audio_recorder.svg?style=flat-square"></a>
+  <a href="https://github.com/Solido/awesome-flutter">
+     <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
 </p>
 
 [English](./README.md) | 简体中文
@@ -24,12 +26,12 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 #### Init初始化 (在`录音前`, 调用`初始化`方法，检查文件有无重复)
 ```
 var recorder = FlutterAudioRecorder("filename", AudioFormat.AAC);
-await _recorder.initialized;
+await recorder.initialized;
 ```
 或者
 ```
 var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a
-await _recorder.initialized;
+await recorder.initialized;
 ```
 
 #### Start开始录音
@@ -77,17 +79,17 @@ new Timer.periodic(tick, (Timer t) async {
 
 #### Pause暂停录音
 ```
-await _recorder.pause();
+await recorder.pause();
 ```
 
 #### Resume继续录音
 ```
-await _recorder.resume();
+await recorder.resume();
 ```
 
 #### Stop停止录音 (停止之后 `stop`, 需再次执行 `init` 重新指定新的文件名，以创建新的录音)
 ```
-var result = await _recorder.stop();
+var result = await recorder.stop();
 File file = widget.localFileSystem.file(result.path);
 ```
 

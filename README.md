@@ -27,12 +27,12 @@ add usage description to plist
 #### Init (run this before `start`, so we could check if file with given name already exists)
 ```
 var recorder = FlutterAudioRecorder("filename", AudioFormat.AAC);
-await _recorder.initialized;
+await recorder.initialized;
 ```
 or
 ```
 var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a
-await _recorder.initialized;
+await recorder.initialized;
 ```
 
 #### Start recording
@@ -79,17 +79,17 @@ new Timer.periodic(tick, (Timer t) async {
 
 #### Pause
 ```
-await _recorder.pause();
+await recorder.pause();
 ```
 
 #### Resume
 ```
-await _recorder.resume();
+await recorder.resume();
 ```
 
 #### Stop (after `stop`, run `init` again to create another recording)
 ```
-var result = await _recorder.stop();
+var result = await recorder.stop();
 File file = widget.localFileSystem.file(result.path);
 ```
 
