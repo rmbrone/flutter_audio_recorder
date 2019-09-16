@@ -30,7 +30,6 @@ class FlutterAudioRecorder {
     if (path != null) {
       // Extension(.xyz) of Path
       extensionInPath = p.extension(path);
-      print("extensionInPath : $extensionInPath");
       // Use AudioFormat
       if (audioFormat != null) {
         // .m4a != .m4a

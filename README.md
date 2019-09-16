@@ -26,9 +26,21 @@ add usage description to plist
 
 #### Init (run this before `start`, so we could check if file with given name already exists)
 ```
-var recorder = FlutterAudioRecorder("filename", AudioFormat.AAC);
+var recorder = FlutterAudioRecorder("recording20190916", AudioFormat.AAC); // recording20190916.m4a by default
 await recorder.initialized;
+
+// note: when extension and format conflicts, AudioFormat will overwrite the extension.
+// example: FlutterAudioRecorder("recording20190916.wav", AudioFormat.AAC)
+// this will be recording20190916.m4a 
+
 ```
+
+##### Audio Extension and Format Mapping
+| Audio Format  | Audio Extension |
+| ------------- | ------------- |
+| AAC  | .m4a .aac .mp4  |
+| WAV  | .wav  |
+
 or
 ```
 var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a

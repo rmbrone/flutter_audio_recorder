@@ -25,9 +25,21 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 
 #### Init初始化 (在`录音前`, 调用`初始化`方法，检查文件有无重复)
 ```
-var recorder = FlutterAudioRecorder("filename", AudioFormat.AAC);
+var recorder = FlutterAudioRecorder("recording20190916", AudioFormat.AAC); // recording20190916.m4a by default
 await recorder.initialized;
+
+// note: when extension and format conflicts, AudioFormat will overwrite the extension.
+// example: FlutterAudioRecorder("recording20190916.wav", AudioFormat.AAC)
+// this will be recording20190916.m4a 
+
 ```
+
+##### Audio Extension and Format Mapping
+| Audio Format  | Audio Extension |
+| ------------- | ------------- |
+| AAC  | .m4a .aac .mp4  |
+| WAV  | .wav  |
+
 或者
 ```
 var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a
