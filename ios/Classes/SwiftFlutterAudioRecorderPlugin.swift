@@ -70,23 +70,23 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 audioRecorder.delegate = self
                 audioRecorder.isMeteringEnabled = true
                 audioRecorder.prepareToRecord()
+                let duration = Int(audioRecorder.currentTime * 1000)
+                status = "initialized"
+                var recordingResult = [String : Any]()
+                recordingResult["duration"] = duration
+                recordingResult["path"] = mPath
+                recordingResult["audioFormat"] = mExtension
+                recordingResult["peakPower"] = 0
+                recordingResult["averagePower"] = 0
+                recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
+                recordingResult["status"] = status
+                
+                result(recordingResult)
             } catch {
                 print("fail")
+                print(error)
                 result(FlutterError(code: "", message: "Failed to init", details: nil))
             }
-            
-            let duration = Int(audioRecorder.currentTime * 1000)
-            status = "initialized"
-            var recordingResult = [String : Any]()
-            recordingResult["duration"] = duration
-            recordingResult["path"] = mPath
-            recordingResult["audioFormat"] = mExtension
-            recordingResult["peakPower"] = 0
-            recordingResult["averagePower"] = 0
-            recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
-            recordingResult["status"] = status
-            
-            result(recordingResult)
         case "start":
             print("start")
             
@@ -178,10 +178,13 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
         }
     }
     
+    // developer.apple.com/documentation/coreaudiotypes/coreaudiotype_constants/1572096-audio_data_format_identifiers
     func getOutputFormatFromString(_ format : String) -> Int {
         switch format {
         case ".mp4", ".aac", ".m4a":
             return Int(kAudioFormatMPEG4AAC)
+        case ".wav":
+            return Int(kAudioFormatLinearPCM)
         default :
             return Int(kAudioFormatMPEG4AAC)
         }

@@ -129,14 +129,17 @@ class RecorderExampleState extends State<RecorderExample> {
 
         customPath = appDocDirectory.path +
             customPath +
-            DateTime.now().millisecondsSinceEpoch.toString();
-        _recorder = FlutterAudioRecorder(customPath, AudioFormat.AAC);
+            DateTime.now().millisecondsSinceEpoch.toString() +
+            ".wav"; // can add extension like ".mp4" ".wav" ".m4a" ".aac"
+        _recorder =
+            FlutterAudioRecorder(customPath, audioFormat: AudioFormat.AAC);
         await _recorder.initialized;
         // after initialization
         var current = await _recorder.current(channel: 0);
         print(current);
         // should be "Initialized", if all working fine
         setState(() {
+          _current = current;
           _currentStatus = current.status;
           print(_currentStatus);
         });
