@@ -1,4 +1,4 @@
-## 0.2.
+## 0.2.2
 
 * Correct iOS deployment target to 8.0.
 
