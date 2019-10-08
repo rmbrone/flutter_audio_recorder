@@ -22,6 +22,8 @@ add usage description to plist
 <string>Can We Use Your Microphone Please</string>
 ```
 
+### note: iOS Deployment Target is 8.0
+
 ## Usage
 
 #### Init (run this before `start`, so we could check if file with given name already exists)

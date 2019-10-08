@@ -21,6 +21,8 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 <string>Can We Use Your Microphone Please</string>
 ```
 
+### 注意: iOS Deployment Target 是 8.0
+
 ## 用法
 
 #### Init初始化 (在`录音前`, 调用`初始化`方法，检查文件有无重复)

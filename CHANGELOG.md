@@ -1,3 +1,8 @@
+## 0.2.
+
+* Correct iOS deployment target to 8.0.
+
+
 ## 0.2.1
 
 * Simplify usage example for initialize recorder.
