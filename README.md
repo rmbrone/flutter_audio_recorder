@@ -39,6 +39,11 @@ var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC); 
 await recorder.initialized;
 ```
 
+##### Sample Rate
+```
+var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // sampleRate is 16000 by default
+await recorder.initialized;
+```
 
 ##### Audio Extension and Format Mapping
 | Audio Format  | Audio Extension List |

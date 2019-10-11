@@ -1,3 +1,8 @@
+## 0.3.0
+
+* Support Sample Rate.
+
+
 ## 0.2.2
 
 * Correct iOS deployment target to 8.0.

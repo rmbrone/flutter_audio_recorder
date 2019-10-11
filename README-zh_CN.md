@@ -38,6 +38,12 @@ var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC); 
 await recorder.initialized;
 ```
 
+##### 采样率
+```
+var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // 采样率默认值 16000
+await recorder.initialized;
+```
+
 
 ##### Audio Extension 和 Format 对应关系
 | Audio Format  | Audio Extension List |
