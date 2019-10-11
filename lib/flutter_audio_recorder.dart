@@ -15,16 +15,17 @@ class FlutterAudioRecorder {
   String _path;
   String _extension;
   Recording _recording;
+  int _sampleRate;
 
   Future _initRecorder;
   Future get initialized => _initRecorder;
   Recording get recording => _recording;
 
-  FlutterAudioRecorder(String path, {AudioFormat audioFormat}) {
-    _initRecorder = _init(path, audioFormat);
+  FlutterAudioRecorder(String path, {AudioFormat audioFormat, int sampleRate}) {
+    _initRecorder = _init(path, audioFormat, sampleRate);
   }
 
-  Future _init(String path, AudioFormat audioFormat) async {
+  Future _init(String path, AudioFormat audioFormat, int sampleRate) async {
     String extension;
     String extensionInPath;
     if (path != null) {
@@ -61,10 +62,11 @@ class FlutterAudioRecorder {
     }
     _path = path;
     _extension = extension;
+    _sampleRate = sampleRate;
 
     Map<String, Object> response;
-    var result = await _channel
-        .invokeMethod('init', {"path": _path, "extension": _extension});
+    var result = await _channel.invokeMethod('init',
+        {"path": _path, "extension": _extension, "sampleRate": _sampleRate});
 
     if (result != false) {
       response = Map.from(result);

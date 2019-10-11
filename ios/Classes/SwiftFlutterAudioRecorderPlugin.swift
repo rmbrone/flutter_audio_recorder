@@ -8,6 +8,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
     var hasPermissions = false
     var mExtension = ""
     var mPath = ""
+    var mSampleRate = 16000
     var channel = 0
     var startTime: Date!
     var settings: [String:Int]!
@@ -48,6 +49,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             let dic = call.arguments as! [String : Any]
             mExtension = dic["extension"] as? String ?? ""
             mPath = dic["path"] as? String ?? ""
+            mSampleRate = dic["sampleRate"] as? Int ?? 16000
             print("m:", mExtension, mPath)
             startTime = Date()
             if mPath == "" {
@@ -58,7 +60,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             
             settings = [
                 AVFormatIDKey: getOutputFormatFromString(mExtension),
-                AVSampleRateKey: 12000,
+                AVSampleRateKey: mSampleRate,
                 AVNumberOfChannelsKey: 1,
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
