@@ -1,11 +1,12 @@
-import 'dart:io' as io;
 import 'dart:async';
-import 'package:flutter/services.dart';
+import 'dart:io' as io;
 
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:audioplayer/audioplayer.dart';
 import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
@@ -104,6 +105,12 @@ class RecorderExampleState extends State<RecorderExample> {
                         new Text("Stop", style: TextStyle(color: Colors.white)),
                     color: Colors.blueAccent.withOpacity(0.5),
                   ),
+                  new FlatButton(
+                    onPressed: onPlayAudio,
+                    child:
+                        new Text("Play", style: TextStyle(color: Colors.white)),
+                    color: Colors.blueAccent.withOpacity(0.5),
+                  ),
                 ],
               ),
               new Text("Status : $_currentStatus"),
@@ -125,7 +132,8 @@ class RecorderExampleState extends State<RecorderExample> {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
         String customPath = '/flutter_audio_recorder_';
-        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+//        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
+        io.Directory appDocDirectory = await getExternalStorageDirectory();
 
         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
         customPath = appDocDirectory.path +
@@ -231,5 +239,10 @@ class RecorderExampleState extends State<RecorderExample> {
         break;
     }
     return Text(text, style: TextStyle(color: Colors.white));
+  }
+
+  void onPlayAudio() async {
+    AudioPlayer audioPlayer = AudioPlayer();
+    await audioPlayer.play(_current.path);
   }
 }
