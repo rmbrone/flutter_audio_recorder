@@ -1,1 +1,2 @@
 rootProject.name = 'flutter_audio_recorder'
+include ':src/om-recorder'

@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   file: ^5.0.4
+  audioplayer: ^0.5.2
 
 
 dev_dependencies:
