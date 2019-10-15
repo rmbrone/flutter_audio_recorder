@@ -105,6 +105,9 @@ class RecorderExampleState extends State<RecorderExample> {
                         new Text("Stop", style: TextStyle(color: Colors.white)),
                     color: Colors.blueAccent.withOpacity(0.5),
                   ),
+                  SizedBox(
+                    width: 8,
+                  ),
                   new FlatButton(
                     onPressed: onPlayAudio,
                     child:
