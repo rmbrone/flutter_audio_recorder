@@ -234,9 +234,6 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
 
   private String getTempFilename() {
     String filepath = mFilePath + ".temp";
-//    File tempFile = new File(filepath);
-//    if (tempFile.exists())
-//      tempFile.delete();
     return filepath;
   }
 
