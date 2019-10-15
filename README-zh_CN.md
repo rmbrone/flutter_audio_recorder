@@ -8,6 +8,7 @@
 [English](./README.md) | 简体中文
 
 Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时获取到底层提供的音频信息（如声音强度）.
+Works for both `Android` and `iOS`
 
 <img src="https://user-images.githubusercontent.com/10917606/64927086-b2bcda00-d838-11e9-9ab8-bad78a95f02c.gif" width="30%" height="30%" />
 

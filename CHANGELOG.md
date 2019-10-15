@@ -1,3 +1,7 @@
+## 0.4.0
+
+* Supports Android
+
 ## 0.3.0
 
 * Support Sample Rate.
