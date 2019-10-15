@@ -30,7 +30,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** FlutterAudioRecorderPlugin */
 public class FlutterAudioRecorderPlugin implements MethodCallHandler {
-  private static final String LOG_NAME = "FlutterAudioRecorder";
+  private static final String LOG_NAME = "AndroidAudioRecorder";
   private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
   private static final byte RECORDER_BPP = 16; // we use 16bit
   private Registrar registrar = null;
@@ -40,11 +40,11 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   private String mExtension;
   private int bufferSize = 1024;
   private FileOutputStream mFileOutputStream = null;
-  private Date mStartTime;
   private String mStatus = "unset";
   private double mPeakPower = 0;
   private double mAveragePower = 0;
   private Thread mRecordingThread = null;
+  private long mDataSize = 0;
 
 
   /** Plugin registration. */
@@ -116,7 +116,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   }
 
   private void handleInit(MethodCall call, Result result)  {
-    mStartTime = new Date();
+    resetRecorder();
     mSampleRate = Integer.parseInt(call.argument("sampleRate").toString());
     mFilePath = call.argument("path").toString();
     mExtension = call.argument("extension").toString();
@@ -156,6 +156,11 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     }
     mRecorder.startRecording();
     mStatus = "recording";
+    startThread();
+    result.success(null);
+  }
+
+  private void startThread(){
     mRecordingThread = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -163,7 +168,6 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
       }
     }, "Audio Processing Thread");
     mRecordingThread.start();
-    result.success(null);
   }
 
   private void handlePause(MethodCall call, Result result) {
@@ -171,6 +175,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     mPeakPower = 0;
     mAveragePower = 0;
     mRecorder.stop();
+    mRecordingThread = null;
     result.success(null);
   }
 
@@ -178,14 +183,14 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   private void handleResume(MethodCall call, Result result) {
     mStatus = "recording";
     mRecorder.startRecording();
+    startThread();
     result.success(null);
   }
 
 
   private void handleStop(MethodCall call, Result result) {
     mStatus = "stopped";
-    mPeakPower = 0;
-    mAveragePower = 0;
+    resetRecorder();
     mRecordingThread = null;
     mRecorder.stop();
     mRecorder.release();
@@ -202,17 +207,15 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
 
 
   private void processAudioStream() {
-    Log.d(LOG_NAME, "processing the stream");
-//    int BufferElements2Rec = 1024 * 2;
+    Log.d(LOG_NAME, "processing the stream: " + mStatus);
     int size = bufferSize;
-//    byte sData[] = new short[size];
     byte bData[] = new byte[size];
 
     while (mStatus == "recording"){
       Log.d(LOG_NAME, "reading audio data");
-      mRecorder.read(bData, 0, size);
+      mRecorder.read(bData, 0, bData.length);
+      mDataSize += bData.length;
       updatePowers(bData);
-//      byte bData[] = short2byte(sData);
         try {
           mFileOutputStream.write(bData);
         } catch (IOException e) {
@@ -329,6 +332,12 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     return out;
   }
 
+  private void resetRecorder(){
+    mPeakPower = 0;
+    mAveragePower = 0;
+    mDataSize = 0;
+  }
+
   private void updatePowers(byte[] bdata){
     double max=0;
     double sum=0;
@@ -343,9 +352,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   }
 
   private int getDuration(){
-    Date now = new Date();
-    long diff = now.getTime() - mStartTime.getTime();
-    long duration = TimeUnit.MILLISECONDS.toSeconds(diff);
+    long duration = mDataSize / (mSampleRate * 2 * 1);
     return (int)duration;
   }
 }
