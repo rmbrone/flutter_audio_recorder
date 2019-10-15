@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io' as io;
+import 'dart:io';
 
 import 'package:audioplayer/audioplayer.dart';
 import 'package:file/file.dart';
@@ -135,8 +136,13 @@ class RecorderExampleState extends State<RecorderExample> {
     try {
       if (await FlutterAudioRecorder.hasPermissions) {
         String customPath = '/flutter_audio_recorder_';
+        io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-        io.Directory appDocDirectory = await getExternalStorageDirectory();
+        if (Platform.isIOS) {
+          appDocDirectory = await getApplicationDocumentsDirectory();
+        } else {
+          appDocDirectory = await getExternalStorageDirectory();
+        }
 
         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
         customPath = appDocDirectory.path +
