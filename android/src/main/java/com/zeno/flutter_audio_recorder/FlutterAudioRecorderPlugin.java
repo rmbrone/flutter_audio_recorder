@@ -16,6 +16,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -220,16 +222,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     }
   }
 
-  private byte[] short2byte(short[] sData) {
-    int shortArrsize = sData.length;
-    byte[] bytes = new byte[shortArrsize * 2];
-    for (int i = 0; i < shortArrsize; i++) {
-      bytes[i * 2] = (byte) (sData[i] & 0x00FF);
-      bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
-      sData[i] = 0;
-    }
-    return bytes;
-  }
+
 
   private void deleteTempFile() {
     File file = new File(getTempFilename());
@@ -330,10 +323,16 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     out.write(header, 0, 44);
   }
 
+  private short[] byte2short(byte[] bData) {
+    short[] out = new short[bData.length/2];
+    ByteBuffer.wrap(bData).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(out);
+    return out;
+  }
 
-  private void updatePowers(byte[] data){
+  private void updatePowers(byte[] bdata){
     double max=0;
     double sum=0;
+    short[] data = byte2short(bdata);
     for(int i=0; i<data.length; i++){
       max = Math.max(Math.abs(data[i]), max);
       sum += Math.abs(data[i]);
