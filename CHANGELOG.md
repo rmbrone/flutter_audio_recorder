@@ -1,3 +1,6 @@
+## 0.4.2
+* fix the android's audio file path, now you can get it from *current* method
+
 ## 0.4.1
 
 * Change Android Dependencies Version
