@@ -136,7 +136,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   private void handleCurrent(MethodCall call, Result result) {
     HashMap<String, Object> currentResult = new HashMap<>();
     currentResult.put("duration", getDuration());
-    currentResult.put("path", mFilePath);
+    currentResult.put("path", (mStatus == "stopped")? mFilePath : getTempFilename());
     currentResult.put("audioFormat", mExtension);
     currentResult.put("peakPower", mPeakPower);
     currentResult.put("averagePower", mAveragePower);
