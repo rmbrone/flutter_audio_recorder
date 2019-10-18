@@ -154,10 +154,12 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             case AVAudioSession.RecordPermission.granted:
                 print("granted")
                 hasPermissions = true
+                result(hasPermissions)
                 break
             case AVAudioSession.RecordPermission.denied:
                 print("denied")
                 hasPermissions = false
+                result(hasPermissions)
                 break
             case AVAudioSession.RecordPermission.undetermined:
                 print("undetermined")
@@ -166,18 +168,20 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                     DispatchQueue.main.async {
                         if allowed {
                             self.hasPermissions = true
+                            print("undetermined true")
                             result(self.hasPermissions)
                         } else {
                             self.hasPermissions = false
+                            print("undetermined false")
                             result(self.hasPermissions)
                         }
                     }
                 }
                 break
             default:
+                result(hasPermissions)
                 break
             }
-            result(hasPermissions)
         default:
             result(FlutterMethodNotImplemented)
         }

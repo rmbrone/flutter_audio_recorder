@@ -1,5 +1,8 @@
+## 0.4.4
+* fix another issue of iOS hasPermission;
+
 ## 0.4.3
-* fix iOS has permission result issue;
+* fix iOS hasPermission result issue;
 
 ## 0.4.2
 * fix the Android's audio file path, now you can get it from *current* method
