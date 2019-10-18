@@ -1,9 +1,12 @@
+## 0.4.3
+* fix iOS has permission result issue;
+
 ## 0.4.2
-* fix the android's audio file path, now you can get it from *current* method
+* fix the Android's audio file path, now you can get it from *current* method
 
 ## 0.4.1
 
-* Change Android Dependencies Version
+* Change Android dependencies version
 
 ## 0.4.0
 
@@ -38,11 +41,11 @@
 
 ## 0.1.2
 
-* Updated Package Description.
+* Updated package description.
 
 ## 0.1.1
 
-* Chinese Documentation added.
+* Chinese documentation added.
 
 ## 0.1.0
 
@@ -50,4 +53,4 @@
 
 ## 0.0.1
 
-* Initial Release.
+* Initial release.

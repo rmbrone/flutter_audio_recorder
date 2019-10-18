@@ -137,6 +137,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
         case "resume":
             print("resume")
             
+            
             if audioRecorder == nil {
                 result(nil)
             }
@@ -160,12 +161,15 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 break
             case AVAudioSession.RecordPermission.undetermined:
                 print("undetermined")
+
                 AVAudioSession.sharedInstance().requestRecordPermission() { [unowned self] allowed in
                     DispatchQueue.main.async {
                         if allowed {
                             self.hasPermissions = true
+                            result(self.hasPermissions)
                         } else {
                             self.hasPermissions = false
+                            result(self.hasPermissions)
                         }
                     }
                 }
