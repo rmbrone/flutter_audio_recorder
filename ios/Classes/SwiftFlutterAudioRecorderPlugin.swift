@@ -66,7 +66,11 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             ]
             
             do {
+                #if swift(>=4.2)
+                try AVAudioSession.sharedInstance().setCategory(AVAudioSession.Category.playAndRecord, options: AVAudioSession.CategoryOptions.defaultToSpeaker)
+                #else
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
+                #endif
                 try AVAudioSession.sharedInstance().setActive(true)
                 audioRecorder = try AVAudioRecorder(url: URL(string: mPath)!, settings: settings)
                 audioRecorder.delegate = self
@@ -136,8 +140,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             result(nil)
         case "resume":
             print("resume")
-            
-            
+        
             if audioRecorder == nil {
                 result(nil)
             }
@@ -150,18 +153,25 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
             result(nil)
         case "hasPermissions":
             print("hasPermissions")
-            switch AVAudioSession.sharedInstance().recordPermission(){
-            case AVAudioSession.RecordPermission.granted:
+            var permission: AVAudioSession.RecordPermission
+            #if swift(>=4.2)
+            permission = AVAudioSession.sharedInstance().recordPermission
+            #else
+            permission = AVAudioSession.sharedInstance().recordPermission()
+            #endif
+            
+            switch permission {
+            case .granted:
                 print("granted")
                 hasPermissions = true
                 result(hasPermissions)
                 break
-            case AVAudioSession.RecordPermission.denied:
+            case .denied:
                 print("denied")
                 hasPermissions = false
                 result(hasPermissions)
                 break
-            case AVAudioSession.RecordPermission.undetermined:
+            case .undetermined:
                 print("undetermined")
 
                 AVAudioSession.sharedInstance().requestRecordPermission() { [unowned self] allowed in

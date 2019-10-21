@@ -1,3 +1,6 @@
+## 0.4.6
+* Add swift version compiler code
+
 ## 0.4.5
 * Update documentation of usage
 * Specify Swift version in podspec
