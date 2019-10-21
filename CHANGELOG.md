@@ -1,3 +1,7 @@
+## 0.4.5
+* Update documentation of usage
+* Specify Swift version in podspec
+
 ## 0.4.4
 * fix another issue of iOS hasPermission;
 
