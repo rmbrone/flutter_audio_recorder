@@ -1,3 +1,7 @@
+## 0.4.7
+* Remove extra pkg from lib
+* Update example app
+
 ## 0.4.6
 * Add swift version compiler code
 
