@@ -1,3 +1,6 @@
+## 0.4.8
+* Fix version number in .podspec
+
 ## 0.4.7
 * Remove extra pkg from lib
 * Update example app
