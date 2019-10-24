@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,9 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -336,15 +333,15 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   }
 
   private void updatePowers(byte[] bdata){
-    double max=0;
-    double sum=0;
     short[] data = byte2short(bdata);
-    for(int i=0; i<data.length; i++){
-      max = Math.max(Math.abs(data[i]), max);
-      sum += Math.abs(data[i]);
+    short sampleVal = data[data.length - 1];
+    if(sampleVal == 0){
+      mAveragePower = -160;
     }
-    mPeakPower = max;
-    mAveragePower = sum / data.length;
+    else {
+      mAveragePower = 20 * Math.log(Math.abs(sampleVal) / 32768.0);
+    }
+    mPeakPower = mAveragePower;
     Log.d(LOG_NAME, "Peak: " + mPeakPower + " average: "+ mAveragePower);
   }
 
