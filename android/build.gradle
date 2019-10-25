@@ -1,5 +1,5 @@
 group 'com.zeno.flutter_audio_recorder'
-version '0.4.8'
+version '0.4.9'
 
 buildscript {
     repositories {

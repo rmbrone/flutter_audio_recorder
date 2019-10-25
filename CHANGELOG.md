@@ -1,5 +1,5 @@
 ## 0.4.9
-* fix the power calculation for android
+* Fix the power calculation for android
 
 ## 0.4.8
 * Fix version number in .podspec
