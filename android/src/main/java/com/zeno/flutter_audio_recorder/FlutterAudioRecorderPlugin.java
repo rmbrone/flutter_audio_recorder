@@ -341,6 +341,11 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     else {
       mAveragePower = 20 * Math.log(Math.abs(sampleVal) / 32768.0);
     }
+
+    // iOS factor : to match iOS power level
+    double iOSFactor = 0.25;
+    mAveragePower = mAveragePower * iOSFactor;
+
     mPeakPower = mAveragePower;
     Log.d(LOG_NAME, "Peak: " + mPeakPower + " average: "+ mAveragePower);
   }
