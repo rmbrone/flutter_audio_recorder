@@ -31,7 +31,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   private static final String LOG_NAME = "AndroidAudioRecorder";
   private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
   private static final byte RECORDER_BPP = 16; // we use 16bit
-  private Registrar registrar = null;
+  private Registrar registrar;
   private int mSampleRate = 16000; // 16Khz
   private AudioRecord mRecorder = null;
   private String mFilePath;
@@ -81,7 +81,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
   @Override
   public void onMethodCall(MethodCall call, Result result) {
-    Log.d(LOG_NAME, "calling " + call.method);
+    // Log.d(LOG_NAME, "calling " + call.method);
     _result = result;
 
     switch (call.method){
@@ -150,7 +150,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     currentResult.put("averagePower", mAveragePower);
     currentResult.put("isMeteringEnabled", true);
     currentResult.put("status", mStatus);
-    Log.d(LOG_NAME, currentResult.toString());
+    // Log.d(LOG_NAME, currentResult.toString());
     result.success(currentResult);
   }
 
@@ -197,19 +197,35 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
 
   private void handleStop(MethodCall call, Result result) {
-    mStatus = "stopped";
-    resetRecorder();
-    mRecordingThread = null;
-    mRecorder.stop();
-    mRecorder.release();
-    try {
-      mFileOutputStream.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    if(mStatus.equals("stopped")) {
+      result.success(null);
+    } else {
+      mStatus = "stopped";
+      resetRecorder();
+      mRecordingThread = null;
+      mRecorder.stop();
+      mRecorder.release();
+      try {
+        mFileOutputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      Log.d(LOG_NAME, "before adding the wav header");
+      copyWaveFile(getTempFilename(), mFilePath);
+      deleteTempFile();
+      // 根据定义，需要正确返回最后的Recording
+      HashMap<String, Object> currentResult = new HashMap<>();
+      currentResult.put("duration", getDuration());
+      currentResult.put("path", mFilePath);
+      currentResult.put("audioFormat", mExtension);
+      currentResult.put("peakPower", mPeakPower);
+      currentResult.put("averagePower", mAveragePower);
+      currentResult.put("isMeteringEnabled", true);
+      currentResult.put("status", mStatus);
+      // Log.d(LOG_NAME, currentResult.toString());
+      result.success(currentResult);
     }
-    Log.d(LOG_NAME, "before adding the wav header");
-    copyWaveFile(getTempFilename(), mFilePath);
-    deleteTempFile();
+
   }
 
 
@@ -358,7 +374,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     mAveragePower = mAveragePower * iOSFactor;
 
     mPeakPower = mAveragePower;
-    Log.d(LOG_NAME, "Peak: " + mPeakPower + " average: "+ mAveragePower);
+    // Log.d(LOG_NAME, "Peak: " + mPeakPower + " average: "+ mAveragePower);
   }
 
   private int getDuration(){
