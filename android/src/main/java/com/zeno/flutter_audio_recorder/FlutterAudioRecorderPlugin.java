@@ -23,10 +23,11 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
+import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /** FlutterAudioRecorderPlugin */
-public class FlutterAudioRecorderPlugin implements MethodCallHandler {
+public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
   private static final String LOG_NAME = "AndroidAudioRecorder";
   private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
   private static final byte RECORDER_BPP = 16; // we use 16bit
@@ -42,6 +43,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   private double mAveragePower = 0;
   private Thread mRecordingThread = null;
   private long mDataSize = 0;
+  private Result _result;
 
 
   /** Plugin registration. */
@@ -53,6 +55,24 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
 
   public FlutterAudioRecorderPlugin(Registrar registrar) {
     this.registrar = registrar;
+    this.registrar.addRequestPermissionsResultListener(this);
+  }
+
+  @Override
+  public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    switch (requestCode) {
+      case REQUEST_RECORD_AUDIO_PERMISSION:
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          Log.d(LOG_NAME, "onRequestPermissionsResult - YES");
+          _result.success(true);
+          return true;
+        }
+        break;
+    }
+    Log.d(LOG_NAME, "onRequestPermissionsResult - NO");
+    _result.success(false);
+    return false;
   }
 
   private boolean hasRecordPermission(){
@@ -62,13 +82,11 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
   @Override
   public void onMethodCall(MethodCall call, Result result) {
     Log.d(LOG_NAME, "calling " + call.method);
+    _result = result;
+
     switch (call.method){
-      case "getPlatformVersion":
-        result.success("Android " + android.os.Build.VERSION.RELEASE);
-        break;
       case "hasPermissions":
-        boolean hasPermission = handleHasPermission();
-        result.success(hasPermission);
+        handleHasPermission();
         break;
       case "init":
         handleInit(call, result);
@@ -94,22 +112,15 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler {
     }
   }
 
-  private boolean handleHasPermission(){
+  private void handleHasPermission(){
     if(hasRecordPermission()){
-      return true;
+      Log.d(LOG_NAME, "handleHasPermission 1");
+      _result.success(true);
+    } else {
+      Log.d(LOG_NAME, "handleHasPermission 2");
+      ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
     }
-    ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
-    int i = 0;
-    int TRY_TIMES = 10;
-    while (i < TRY_TIMES){
-      // check the permission
-      SystemClock.sleep(1000);
-      if(hasRecordPermission()){
-        return true;
-      }
-      i += 1;
-    }
-    return false;
+
   }
 
   private void handleInit(MethodCall call, Result result)  {
