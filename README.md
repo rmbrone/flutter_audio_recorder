@@ -17,17 +17,29 @@ Flutter Audio Record Plugin that supports `Record` `Pause` `Resume` `Stop` and p
 add `flutter_audio_recorder` to your `pubspec.yaml`
 
 ## iOS Permission 
-1. add usage description to plist 
+1. Add usage description to plist 
 ```
 <key>NSMicrophoneUsageDescription</key>
 <string>Can We Use Your Microphone Please</string>
 ```
-2. or Use `hasPermission` api to request permission when needed
+2. Then use `hasPermission` api to ask user for permission when needed
+
+## Android Permission
+1. Add `uses-permission` to `./android/app/src/main/AndroidManifest.xml` in xml root level like below
+```
+    ...
+    </application>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    ...
+</manifest>
+```
+2. Then use `hasPermission` api to ask user for permission when needed
 
 ## Configuration
 #### iOS Deployment Target is 8.0
-#### AndroidX: use latest version (0.5.x)
-#### Legacy Android: use old version (0.4.9)
+#### AndroidX: use latest version (`0.5.x`)
+#### Legacy Android: use old version (`0.4.9`)
 
 ## Usage 
 Recommended API Usage: `hasPermission` => `init` > `start` -> (`pause` <-> `resume`) * n -> `stop`, call `init` again before `start` another recording

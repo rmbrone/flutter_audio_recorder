@@ -16,17 +16,31 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 加入 `flutter_audio_recorder` 到你的 `pubspec.yaml`
 
 ## 权限配置
-1. 新增一条配置到plist 
+## iOS 权限 
+1. 修改plist, 加入下面这一条
 ```
 <key>NSMicrophoneUsageDescription</key>
 <string>Can We Use Your Microphone Please</string>
 ```
-2. 或者使用 `hasPermission` api，延迟申请权限
+2. 然后在页面需要录音功能的时候调用 `hasPermission` API
+
+## Android Permission
+1. 加 `uses-permission` 到 `./android/app/src/main/AndroidManifest.xml`，跟<application>平级， 像下面这样
+```
+    ...
+    </application>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    ...
+</manifest>
+```
+2. 然后在页面需要录音功能的时候调用 `hasPermission` API
+
 
 ## 其他配置
 #### iOS Deployment Target is 8.0
-#### 开启AndroidX的项目: 请使用最新版本 (0.5.x)
-#### 未使用AndroidX的项目: 可以使用旧版本 (0.4.9)
+#### 开启AndroidX的项目: 请使用最新版本 (`0.5.x`)
+#### 未使用AndroidX的项目: 可以使用旧版本 (`0.4.9`)
 
 ### 注意: iOS Deployment Target 是 8.0
 

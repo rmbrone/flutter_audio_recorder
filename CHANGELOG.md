@@ -1,3 +1,8 @@
+## 0.5.2
+* Explicitly asking for WRITE_EXTERNAL_STORAGE permission as it's required in Android
+* Updated documentation for Android Permission Section
+* Add null check for temp file deletion
+
 ## 0.5.1
 * Fix Android duration API
 * Complete plugin public API doc

@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.os.Build.VERSION;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -29,7 +30,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 /** FlutterAudioRecorderPlugin */
 public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
   private static final String LOG_NAME = "AndroidAudioRecorder";
-  private static final int MY_PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
+  private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
   private static final byte RECORDER_BPP = 16; // we use 16bit
   private Registrar registrar;
   private int mSampleRate = 16000; // 16Khz
@@ -63,20 +64,32 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
     switch (requestCode) {
       case REQUEST_RECORD_AUDIO_PERMISSION:
-        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-          Log.d(LOG_NAME, "onRequestPermissionsResult - YES");
-          _result.success(true);
-          return true;
+        boolean granted = true;
+        Log.d(LOG_NAME, "parsing result");
+        for (int result : grantResults) {
+          if(result != PackageManager.PERMISSION_GRANTED) {
+            Log.d(LOG_NAME, "result" + result);
+            granted = false;
+          }
         }
-        break;
+        Log.d(LOG_NAME, "onRequestPermissionsResult -" + granted);
+        _result.success(granted);
+        return granted;
+        default:
+          Log.d(LOG_NAME, "onRequestPermissionsResult - false");
+          _result.success(false);
+          return false;
     }
-    Log.d(LOG_NAME, "onRequestPermissionsResult - NO");
-    _result.success(false);
-    return false;
   }
 
   private boolean hasRecordPermission(){
-    return ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    // if after [Marshmallow], we need to check permission on runtime
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+      return (ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+              && (ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    } else {
+      return ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
   }
 
   @Override
@@ -114,11 +127,16 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
   private void handleHasPermission(){
     if(hasRecordPermission()){
-      Log.d(LOG_NAME, "handleHasPermission 1");
+      Log.d(LOG_NAME, "handleHasPermission true");
       _result.success(true);
     } else {
-      Log.d(LOG_NAME, "handleHasPermission 2");
-      ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO}, MY_PERMISSIONS_REQUEST_RECORD_AUDIO);
+      Log.d(LOG_NAME, "handleHasPermission false");
+
+      if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+        ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+      } else {
+        ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+      }
     }
 
   }
@@ -187,14 +205,12 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     result.success(null);
   }
 
-
   private void handleResume(MethodCall call, Result result) {
     mStatus = "recording";
     mRecorder.startRecording();
     startThread();
     result.success(null);
   }
-
 
   private void handleStop(MethodCall call, Result result) {
     if(mStatus.equals("stopped")) {
@@ -228,8 +244,6 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
   }
 
-
-
   private void processAudioStream() {
     Log.d(LOG_NAME, "processing the stream: " + mStatus);
     int size = bufferSize;
@@ -249,11 +263,11 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     }
   }
 
-
-
   private void deleteTempFile() {
     File file = new File(getTempFilename());
-    file.delete();
+    if(file.exists()) {
+      file.delete();
+    }
   }
 
   private String getTempFilename() {
