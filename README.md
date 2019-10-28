@@ -41,9 +41,10 @@ add `flutter_audio_recorder` to your `pubspec.yaml`
 2. Then use `hasPermission` api to ask user for permission when needed
 
 ## Configuration
-#### iOS Deployment Target is 8.0
-#### AndroidX: use latest version (`0.5.x`)
-#### Legacy Android: use old version (`0.4.9`)
+#### iOS Deployment Target is 8.0 above
+#### Android
+- AndroidX: use latest version (`0.5.x`)
+- Legacy Android: use old version (`0.4.9`)
 
 ## Usage 
 Recommended API Usage: `hasPermission` => `init` > `start` -> (`pause` <-> `resume`) * n -> `stop`, call `init` again before `start` another recording
