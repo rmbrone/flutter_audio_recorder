@@ -1,5 +1,9 @@
+## 0.5.0
+* Support AndroidX
+* Update documentation
+
 ## 0.4.9
-* Fixed minor issues for android
+* Fixed minor issues for Android
 
 ## 0.4.8
 * Fix version number in .podspec
