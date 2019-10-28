@@ -30,7 +30,8 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 
 ### 注意: iOS Deployment Target 是 8.0
 
-## 用法 （建议使用方式: hasPermission => init > start -> (pause - resume) * n -> stop ）, 重新开始新录音的话 流程一样
+## 用法 
+建议使用方式: `hasPermission` => `init` > `start` -> (`pause` <-> `resume`) * n -> `stop` ）, 重新开始新录音的话 流程一样
 
 #### 先需要请求权限（如果已经请求过 则会直接返回结果）
 ```
