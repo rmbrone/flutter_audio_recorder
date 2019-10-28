@@ -1,3 +1,7 @@
+## 0.5.1
+* Fix Android duration API
+* Complete plugin public API doc
+
 ## 0.5.0
 * Support AndroidX
 * Update documentation

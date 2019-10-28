@@ -143,7 +143,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
   private void handleCurrent(MethodCall call, Result result) {
     HashMap<String, Object> currentResult = new HashMap<>();
-    currentResult.put("duration", getDuration());
+    currentResult.put("duration", getDuration() * 1000);
     currentResult.put("path", (mStatus == "stopped")? mFilePath : getTempFilename());
     currentResult.put("audioFormat", mExtension);
     currentResult.put("peakPower", mPeakPower);
@@ -215,7 +215,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
       deleteTempFile();
       // 根据定义，需要正确返回最后的Recording
       HashMap<String, Object> currentResult = new HashMap<>();
-      currentResult.put("duration", getDuration());
+      currentResult.put("duration", getDuration() * 1000);
       currentResult.put("path", mFilePath);
       currentResult.put("audioFormat", mExtension);
       currentResult.put("peakPower", mPeakPower);

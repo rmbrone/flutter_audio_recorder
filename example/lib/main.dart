@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io' as io;
-import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:file/file.dart';
@@ -138,7 +137,7 @@ class RecorderExampleState extends State<RecorderExample> {
         String customPath = '/flutter_audio_recorder_';
         io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
-        if (Platform.isIOS) {
+        if (io.Platform.isIOS) {
           appDocDirectory = await getApplicationDocumentsDirectory();
         } else {
           appDocDirectory = await getExternalStorageDirectory();
