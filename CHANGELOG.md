@@ -1,3 +1,8 @@
+## 0.5.3
+* Fix Android sample rate issue
+* Fix `Stop` API
+* Fix metering API for Android and iOS
+
 ## 0.5.2
 * Explicitly asking for WRITE_EXTERNAL_STORAGE permission as it's required in Android
 * Updated documentation for Android Permission Section

@@ -109,8 +109,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 result(nil)
             } else {
                 audioRecorder.updateMeters()
-                audioRecorder.stop()
-                
+
                 let duration = Int(audioRecorder.currentTime * 1000)
                 status = "stopped"
                 var recordingResult = [String : Any]()
@@ -121,7 +120,8 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 recordingResult["averagePower"] = audioRecorder.averagePower(forChannel: channel)
                 recordingResult["isMeteringEnabled"] = audioRecorder.isMeteringEnabled
                 recordingResult["status"] = status
-                
+
+                audioRecorder.stop()
                 audioRecorder = nil
                 result(recordingResult)
             }

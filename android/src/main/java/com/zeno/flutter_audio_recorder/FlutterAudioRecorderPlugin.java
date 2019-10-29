@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.HashMap;
+import java.util.Arrays;
+import java.util.List;
 
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -40,8 +42,8 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   private int bufferSize = 1024;
   private FileOutputStream mFileOutputStream = null;
   private String mStatus = "unset";
-  private double mPeakPower = 0;
-  private double mAveragePower = 0;
+  private double mPeakPower = -120;
+  private double mAveragePower = -120;
   private Thread mRecordingThread = null;
   private long mDataSize = 0;
   private Result _result;
@@ -198,8 +200,8 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
 
   private void handlePause(MethodCall call, Result result) {
     mStatus = "paused";
-    mPeakPower = 0;
-    mAveragePower = 0;
+    mPeakPower = -120;
+    mAveragePower = -120;
     mRecorder.stop();
     mRecordingThread = null;
     result.success(null);
@@ -217,6 +219,18 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
       result.success(null);
     } else {
       mStatus = "stopped";
+
+      // Return Recording Object
+      HashMap<String, Object> currentResult = new HashMap<>();
+      currentResult.put("duration", getDuration() * 1000);
+      currentResult.put("path", mFilePath);
+      currentResult.put("audioFormat", mExtension);
+      currentResult.put("peakPower", mPeakPower);
+      currentResult.put("averagePower", mAveragePower);
+      currentResult.put("isMeteringEnabled", true);
+      currentResult.put("status", mStatus);
+
+
       resetRecorder();
       mRecordingThread = null;
       mRecorder.stop();
@@ -229,15 +243,7 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
       Log.d(LOG_NAME, "before adding the wav header");
       copyWaveFile(getTempFilename(), mFilePath);
       deleteTempFile();
-      // 根据定义，需要正确返回最后的Recording
-      HashMap<String, Object> currentResult = new HashMap<>();
-      currentResult.put("duration", getDuration() * 1000);
-      currentResult.put("path", mFilePath);
-      currentResult.put("audioFormat", mExtension);
-      currentResult.put("peakPower", mPeakPower);
-      currentResult.put("averagePower", mAveragePower);
-      currentResult.put("isMeteringEnabled", true);
-      currentResult.put("status", mStatus);
+
       // Log.d(LOG_NAME, currentResult.toString());
       result.success(currentResult);
     }
@@ -368,24 +374,24 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   }
 
   private void resetRecorder(){
-    mPeakPower = 0;
-    mAveragePower = 0;
+    mPeakPower = -120;
+    mAveragePower = -120;
     mDataSize = 0;
   }
 
   private void updatePowers(byte[] bdata){
     short[] data = byte2short(bdata);
     short sampleVal = data[data.length - 1];
-    if(sampleVal == 0){
-      mAveragePower = -160;
+    String[] escapeStatusList = new String[]{"paused", "stopped", "initialized", "unset"};
+
+    if(sampleVal == 0 || Arrays.asList(escapeStatusList).contains(mStatus)){
+      mAveragePower = -120; // to match iOS silent case
     }
     else {
-      mAveragePower = 20 * Math.log(Math.abs(sampleVal) / 32768.0);
+      // iOS factor : to match iOS power level
+      double iOSFactor = 0.25;
+      mAveragePower = 20 * Math.log(Math.abs(sampleVal) / 32768.0)  * iOSFactor;
     }
-
-    // iOS factor : to match iOS power level
-    double iOSFactor = 0.25;
-    mAveragePower = mAveragePower * iOSFactor;
 
     mPeakPower = mAveragePower;
     // Log.d(LOG_NAME, "Peak: " + mPeakPower + " average: "+ mAveragePower);

@@ -74,8 +74,10 @@ class FlutterAudioRecorder {
       response = Map.from(result);
     }
 
-    _recording = new Recording();
-    _recording.status = _stringToRecordingStatus(response['status']);
+    _recording = new Recording()
+      ..status = _stringToRecordingStatus(response['status'])
+      ..metering = new AudioMetering(
+          averagePower: -120, peakPower: -120, isMeteringEnabled: true);
 
     return;
   }
@@ -110,7 +112,7 @@ class FlutterAudioRecorder {
       _responseToRecording(response);
     }
 
-    return recording;
+    return _recording;
   }
 
   /// Ask for current status of recording
@@ -121,12 +123,12 @@ class FlutterAudioRecorder {
 
     var result = await _channel.invokeMethod('current', {"channel": channel});
 
-    if (result != null) {
+    if (result != null && _recording?.status != RecordingStatus.Stopped) {
       response = Map.from(result);
       _responseToRecording(response);
     }
 
-    return recording;
+    return _recording;
   }
 
   /// Returns the result of record permission

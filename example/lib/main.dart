@@ -212,6 +212,7 @@ class RecorderExampleState extends State<RecorderExample> {
   _stop() async {
     var result = await _recorder.stop();
     print("Stop recording: ${result.path}");
+    print("Stop recording: ${result.duration}");
     File file = widget.localFileSystem.file(result.path);
     print("File length: ${await file.length()}");
     setState(() {
