@@ -21,7 +21,8 @@ class FlutterAudioRecorder {
   Future get initialized => _initRecorder;
   Recording get recording => _recording;
 
-  FlutterAudioRecorder(String path, {AudioFormat audioFormat, int sampleRate}) {
+  FlutterAudioRecorder(String path,
+      {AudioFormat audioFormat, int sampleRate = 16000}) {
     _initRecorder = _init(path, audioFormat, sampleRate);
   }
 
