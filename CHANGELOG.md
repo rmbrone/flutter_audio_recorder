@@ -1,3 +1,6 @@
+## 0.5.4
+* Remove default result call on permission call back for Android
+
 ## 0.5.3
 * Fix Android sample rate issue
 * Fix `Stop` API
