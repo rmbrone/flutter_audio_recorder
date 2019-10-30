@@ -75,11 +75,12 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
           }
         }
         Log.d(LOG_NAME, "onRequestPermissionsResult -" + granted);
-        _result.success(granted);
+        if(_result != null) {
+          _result.success(granted);
+        }
         return granted;
         default:
           Log.d(LOG_NAME, "onRequestPermissionsResult - false");
-          _result.success(false);
           return false;
     }
   }
@@ -130,7 +131,9 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   private void handleHasPermission(){
     if(hasRecordPermission()){
       Log.d(LOG_NAME, "handleHasPermission true");
-      _result.success(true);
+      if(_result != null) {
+        _result.success(true);
+      }
     } else {
       Log.d(LOG_NAME, "handleHasPermission false");
 
