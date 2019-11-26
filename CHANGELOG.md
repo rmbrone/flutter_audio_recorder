@@ -1,3 +1,6 @@
+## 0.5.5
+migrate to Android X.
+
 ## 0.5.4
 * Remove default result call on permission call back for Android
 
