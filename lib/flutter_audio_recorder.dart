@@ -70,6 +70,9 @@ class FlutterAudioRecorder {
     var result = await _channel.invokeMethod('init',
         {"path": _path, "extension": _extension, "sampleRate": _sampleRate});
 
+    if (result == null)
+      throw 'Failed to init';
+
     if (result != false) {
       response = Map.from(result);
     }
