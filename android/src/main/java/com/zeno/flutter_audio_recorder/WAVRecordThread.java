@@ -31,7 +31,7 @@ public class WAVRecordThread extends RecordThread {
     }
 
     @Override
-    public void start() throws FileNotFoundException {
+    public void start() throws IOException {
         recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, AudioFormat.CHANNEL_IN_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize);
         fileOutputStream = new FileOutputStream(getTempFilename());
         recorder.startRecording();

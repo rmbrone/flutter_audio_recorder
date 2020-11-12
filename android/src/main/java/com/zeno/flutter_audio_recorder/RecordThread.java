@@ -4,6 +4,7 @@ import android.media.AudioFormat;
 import android.media.AudioRecord;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class RecordThread implements Runnable{
@@ -37,7 +38,7 @@ public abstract class RecordThread implements Runnable{
         return status;
     }
 
-    public abstract void start() throws FileNotFoundException;
+    public abstract void start() throws IOException;
 
     public abstract void pause();
 

@@ -3,6 +3,7 @@ package com.zeno.flutter_audio_recorder;
 import android.app.Activity;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 
 import io.flutter.plugin.common.MethodCall;
@@ -70,7 +71,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         String filePath = call.argument("path").toString();
         String extension = call.argument("extension").toString();
 
-        recordThread = new WAVRecordThread(sampleRate, filePath, extension);
+        recordThread = new AACRecordThread(sampleRate, filePath, extension);
 
         HashMap<String, Object> initResult = new HashMap<>();
         initResult.put("duration", 0);
@@ -99,7 +100,7 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
     private void handleStart(MethodCall call, MethodChannel.Result result) {
         try {
             recordThread.start();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             result.error("", "cannot find the file", null);
             return;
         }
