@@ -71,7 +71,10 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         String filePath = call.argument("path").toString();
         String extension = call.argument("extension").toString();
 
-        recordThread = new AACRecordThread(sampleRate, filePath, extension);
+        if (isAacExtension(extension))
+            recordThread = new AACRecordThread(sampleRate, filePath, extension);
+        else
+            recordThread = new WAVRecordThread(sampleRate, filePath, extension);
 
         HashMap<String, Object> initResult = new HashMap<>();
         initResult.put("duration", 0);
@@ -82,6 +85,12 @@ public class MethodCallHandlerImpl implements MethodChannel.MethodCallHandler {
         initResult.put("isMeteringEnabled", true);
         initResult.put("status", recordThread.getStatus());
         result.success(initResult);
+    }
+
+    private boolean isAacExtension(String extension) {
+        return extension.equalsIgnoreCase(".AAC") ||
+                extension.equalsIgnoreCase(".M4A") ||
+                extension.equalsIgnoreCase(".MP4");
     }
 
     private void handleCurrent(MethodCall call, MethodChannel.Result result) {
