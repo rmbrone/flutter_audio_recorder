@@ -42,6 +42,8 @@ public class AACRecordThread extends RecordThread {
 
     AACRecordThread(int sampleRate, String filePath, String extension) {
         super(sampleRate, filePath, extension);
+        // TODO: find a way to change sample rate
+        this.sampleRate = SAMPLE_RATE;
     }
 
     @Override
@@ -272,7 +274,7 @@ public class AACRecordThread extends RecordThread {
     }
 
     private AudioRecord createAudioRecord(int bufferSize) {
-        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE,
+        AudioRecord audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT, bufferSize * 10);
 
@@ -311,7 +313,7 @@ public class AACRecordThread extends RecordThread {
         MediaFormat mediaFormat = new MediaFormat();
 
         mediaFormat.setString(MediaFormat.KEY_MIME, "audio/mp4a-latm");
-        mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, SAMPLE_RATE);
+        mediaFormat.setInteger(MediaFormat.KEY_SAMPLE_RATE, sampleRate);
         mediaFormat.setInteger(MediaFormat.KEY_CHANNEL_COUNT, CHANNELS);
         mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE, bufferSize);
         mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE, BIT_RATE);
