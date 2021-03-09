@@ -10,6 +10,7 @@ import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([]);
   return runApp(new MyApp());
 }
@@ -67,7 +68,7 @@ class RecorderExampleState extends State<RecorderExample> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: new FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         switch (_currentStatus) {
                           case RecordingStatus.Initialized:
@@ -95,24 +96,33 @@ class RecorderExampleState extends State<RecorderExample> {
                         }
                       },
                       child: _buildText(_currentStatus),
-                      color: Colors.lightBlue,
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                        Colors.lightBlue,
+                      )),
                     ),
                   ),
-                  new FlatButton(
+                  new TextButton(
                     onPressed:
                         _currentStatus != RecordingStatus.Unset ? _stop : null,
                     child:
                         new Text("Stop", style: TextStyle(color: Colors.white)),
-                    color: Colors.blueAccent.withOpacity(0.5),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.blueAccent.withOpacity(0.5),
+                    )),
                   ),
                   SizedBox(
                     width: 8,
                   ),
-                  new FlatButton(
+                  new TextButton(
                     onPressed: onPlayAudio,
                     child:
                         new Text("Play", style: TextStyle(color: Colors.white)),
-                    color: Colors.blueAccent.withOpacity(0.5),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                      Colors.blueAccent.withOpacity(0.5),
+                    )),
                   ),
                 ],
               ),
@@ -165,8 +175,8 @@ class RecorderExampleState extends State<RecorderExample> {
           print(_currentStatus);
         });
       } else {
-        Scaffold.of(context).showSnackBar(
-            new SnackBar(content: new Text("You must accept permissions")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: new Text("You must accept permissions")));
       }
     } catch (e) {
       print(e);
