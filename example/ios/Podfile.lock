@@ -2,7 +2,7 @@ PODS:
   - audioplayers (0.0.1):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_audio_recorder (0.4.5):
+  - flutter_audio_recorder (0.5.4):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
@@ -26,9 +26,9 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   audioplayers: 84f968cea3f2deab00ec4f8ff53358b3c0b3992c
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_audio_recorder: d44a21331c96ce09be664cdfe1db54a58951fdf1
+  flutter_audio_recorder: eb998d4e75e59b39d9e3ca1818a5e0f3a82f5836
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
 
 PODFILE CHECKSUM: 1684eb5a3603bbff42054fc5031250e7ae86cfe4
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.10.1
