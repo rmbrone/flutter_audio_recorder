@@ -1,12 +1,15 @@
 package com.zeno.flutter_audio_recorder;
 
+import android.app.Activity;
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Build.VERSION;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
@@ -29,12 +32,15 @@ import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.PluginRegistry;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.*;
+import io.flutter.plugin.common.BinaryMessenger;
+
 /** FlutterAudioRecorderPlugin */
-public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener {
+public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegistry.RequestPermissionsResultListener, FlutterPlugin, ActivityAware {
   private static final String LOG_NAME = "AndroidAudioRecorder";
   private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 200;
   private static final byte RECORDER_BPP = 16; // we use 16bit
-  private Registrar registrar;
   private int mSampleRate = 16000; // 16Khz
   private AudioRecord mRecorder = null;
   private String mFilePath;
@@ -47,19 +53,52 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   private Thread mRecordingThread = null;
   private long mDataSize = 0;
   private Result _result;
-
+  private MethodChannel channel;
+  private Context context;
+  protected Activity activity;
 
   /** Plugin registration. */
   public static void registerWith(Registrar registrar) {
-
-    final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_audio_recorder");
-    channel.setMethodCallHandler(new FlutterAudioRecorderPlugin(registrar));
+    final FlutterAudioRecorderPlugin plugin = new FlutterAudioRecorderPlugin();
+    plugin.setupChannel(registrar.messenger(), registrar.context());
+    plugin.activity = registrar.activity();
   }
 
-  public FlutterAudioRecorderPlugin(Registrar registrar) {
-    this.registrar = registrar;
-    this.registrar.addRequestPermissionsResultListener(this);
+  private void setupChannel(BinaryMessenger messenger, Context context) {
+    channel = new MethodChannel(messenger, "flutter_audio_recorder");
+    channel.setMethodCallHandler(this);
+    this.context = context;
   }
+
+  @Override
+  public void onAttachedToActivity​(@NonNull ActivityPluginBinding binding) {
+    activity = binding.getActivity();
+  }
+
+  @Override
+  public void onReattachedToActivityForConfigChanges​(@NonNull ActivityPluginBinding binding){}
+
+  @Override
+  public void onDetachedFromActivityForConfigChanges(){}
+
+  @Override
+  public void onDetachedFromActivity() {
+    activity = null;
+  }
+
+  @Override
+  public void onAttachedToEngine(@NonNull FlutterPluginBinding binding) {
+    setupChannel(binding.getBinaryMessenger(), binding.getApplicationContext());
+  }
+
+  @Override
+  public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
+    channel.setMethodCallHandler(null);
+    channel = null;
+    context = null;
+  }
+
+  public FlutterAudioRecorderPlugin() {}
 
   @Override
   public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -88,10 +127,10 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
   private boolean hasRecordPermission(){
     // if after [Marshmallow], we need to check permission on runtime
     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-      return (ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
-              && (ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+      return (ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED)
+              && (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
     } else {
-      return ContextCompat.checkSelfPermission(registrar.context(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+      return ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
   }
 
@@ -138,9 +177,9 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
       Log.d(LOG_NAME, "handleHasPermission false");
 
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-        ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_RECORD_AUDIO);
       } else {
-        ActivityCompat.requestPermissions(registrar.activity(), new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
+        ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.RECORD_AUDIO}, PERMISSIONS_REQUEST_RECORD_AUDIO);
       }
     }
 
@@ -354,8 +393,13 @@ public class FlutterAudioRecorderPlugin implements MethodCallHandler, PluginRegi
     header[29] = (byte) ((byteRate >> 8) & 0xff);
     header[30] = (byte) ((byteRate >> 16) & 0xff);
     header[31] = (byte) ((byteRate >> 24) & 0xff);
-    header[32] = (byte) (1); // block align
-    header[33] = 0;
+
+    long blockAlign = channels * (int) RECORDER_BPP / 8; 
+    //header[32] = (byte) (1); // block align
+    header[32] = (byte) (blockAlign);
+    //header[33] = 0;
+    header[33] = (byte) (blockAlign >> 8);
+
     header[34] = RECORDER_BPP; // bits per sample
     header[35] = 0;
     header[36] = 'd';
