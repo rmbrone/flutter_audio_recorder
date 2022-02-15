@@ -1,3 +1,5 @@
+## 1.0.0+1
+* Fix to Dart formatting requirements
 ## 1.0.0
 * Fix to example IOS and Android builds
 * Null Safety update
