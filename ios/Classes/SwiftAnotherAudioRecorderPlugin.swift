@@ -2,7 +2,7 @@ import Flutter
 import UIKit
 import AVFoundation
 
-public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRecorderDelegate {
+public class SwiftAnotherAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRecorderDelegate {
     // status - unset, initialized, recording, paused, stopped
     var status = "unset"
     var hasPermissions = false
@@ -15,8 +15,8 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
     var audioRecorder: AVAudioRecorder!
     
     public static func register(with registrar: FlutterPluginRegistrar) {
-        let channel = FlutterMethodChannel(name: "flutter_audio_recorder", binaryMessenger: registrar.messenger())
-        let instance = SwiftFlutterAudioRecorderPlugin()
+        let channel = FlutterMethodChannel(name: "another_audio_recorder", binaryMessenger: registrar.messenger())
+        let instance = SwiftAnotherAudioRecorderPlugin()
         registrar.addMethodCallDelegate(instance, channel: channel)
     }
     
@@ -64,6 +64,13 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 AVNumberOfChannelsKey: 1,
                 AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
             ]
+
+            guard let destinationUrl = URL(string: mPath) else {
+                let errorMessage = "Failed to initialize URL path from string: \(mPath)"
+                print(errorMessage)
+                result(FlutterError(code: "", message: errorMessage, details: nil))
+                return
+            }
             
             do {
                 #if swift(>=4.2)
@@ -72,7 +79,7 @@ public class SwiftFlutterAudioRecorderPlugin: NSObject, FlutterPlugin, AVAudioRe
                 try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayAndRecord, with: AVAudioSessionCategoryOptions.defaultToSpeaker)
                 #endif
                 try AVAudioSession.sharedInstance().setActive(true)
-                audioRecorder = try AVAudioRecorder(url: URL(string: mPath)!, settings: settings)
+                audioRecorder = try AVAudioRecorder(url: destinationUrl, settings: settings)
                 audioRecorder.delegate = self
                 audioRecorder.isMeteringEnabled = true
                 audioRecorder.prepareToRecord()

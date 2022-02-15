@@ -6,7 +6,7 @@ import 'package:file/file.dart';
 import 'package:file/local.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_audio_recorder/flutter_audio_recorder.dart';
+import 'package:another_audio_recorder/another_audio_recorder.dart';
 import 'package:path_provider/path_provider.dart';
 
 void main() {
@@ -43,7 +43,7 @@ class RecorderExample extends StatefulWidget {
 }
 
 class RecorderExampleState extends State<RecorderExample> {
-  FlutterAudioRecorder? _recorder;
+  AnotherAudioRecorder? _recorder;
   Recording? _current;
   RecordingStatus _currentStatus = RecordingStatus.Unset;
 
@@ -126,8 +126,8 @@ class RecorderExampleState extends State<RecorderExample> {
 
   _init() async {
     try {
-      if (await FlutterAudioRecorder.hasPermissions) {
-        String customPath = '/flutter_audio_recorder_';
+      if (await AnotherAudioRecorder.hasPermissions) {
+        String customPath = '/another_audio_recorder_';
         io.Directory appDocDirectory;
 //        io.Directory appDocDirectory = await getApplicationDocumentsDirectory();
         if (io.Platform.isIOS) {
@@ -142,7 +142,7 @@ class RecorderExampleState extends State<RecorderExample> {
         // .wav <---> AudioFormat.WAV
         // .mp4 .m4a .aac <---> AudioFormat.AAC
         // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-        _recorder = FlutterAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+        _recorder = AnotherAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
 
         await _recorder?.initialized;
         // after initialization

@@ -1,3 +1,10 @@
+## 1.0.0
+* Fix to example IOS and Android builds
+* Null Safety update
+* @hnvn - Migrate to Android embedding v2 + Support AAC codec (https://github.com/rmbrone/flutter_audio_recorder/pull/52)
+* @PerrchicK - error handling instead of app crash (https://github.com/rmbrone/flutter_audio_recorder/pull/45/files)
+* Renamed to another_flutter_recorder
+
 ## 0.5.5
 migrate to Android X.
 
@@ -74,7 +81,7 @@ migrate to Android X.
 
 * Fix issue of init method.
 * Fix issue of wav format recording initialization.
-* audioFormat of FlutterAudioRecorder now is optional when instantiating.
+* audioFormat of AnotherAudioRecorder now is optional when instantiating.
 * Overwrite file extension when there is conflicts between extension and audioFormat.
 * Update Example app.
 * Update README.

@@ -1,6 +1,6 @@
-# flutter_audio_recorder
+# another_audio_recorder
 <p align="left">
-  <a href="https://pub.dartlang.org/packages/flutter_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_audio_recorder.svg?style=flat-square"></a>
+  <a href="https://pub.dartlang.org/packages/another_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/another_audio_recorder.svg?style=flat-square"></a>
   <a href="https://github.com/Solido/awesome-flutter">
      <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
 </p>
@@ -13,11 +13,11 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 <img src="https://user-images.githubusercontent.com/10917606/64927086-b2bcda00-d838-11e9-9ab8-bad78a95f02c.gif" width="30%" height="30%" />
 
 ## 安装方式
-加入 `flutter_audio_recorder` 到你的 `pubspec.yaml`
+加入 `another_audio_recorder` 到你的 `pubspec.yaml`
 
 #### 代码示例项目: 
-- [Flutter Application ( using AndroidX )](https://github.com/nikli2009/flutter_audio_recorder_demo/tree/android-x)
-- [Flutter Application ( without AndroidX )](https://github.com/nikli2009/flutter_audio_recorder_demo/tree/non-android-x)
+- [Flutter Application ( using AndroidX )](https://github.com/nikli2009/another_audio_recorder_demo/tree/android-x)
+- [Flutter Application ( without AndroidX )](https://github.com/nikli2009/another_audio_recorder_demo/tree/non-android-x)
 
 ## 权限配置
 ## iOS 权限 
@@ -54,25 +54,25 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 
 #### 先需要请求权限（如果已经请求过 则会直接返回结果）
 ```
-bool hasPermission = await FlutterAudioRecorder.hasPermissions;
+bool hasPermission = await AnotherAudioRecorder.hasPermissions;
 ```
 
 #### Init初始化 (在`录音前`, 调用`初始化`方法，检查文件有无重复)
 ```
-var recorder = FlutterAudioRecorder("filename.mp4"); // .wav .aac .m4a
+var recorder = AnotherAudioRecorder("filename.mp4"); // .wav .aac .m4a
 await recorder.initialized;
 ```
 
 或者
 
 ```
-var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC); // or AudioFormat.WAV
+var recorder = AnotherAudioRecorder("file_path", audioFormat: AudioFormat.AAC); // or AudioFormat.WAV
 await recorder.initialized;
 ```
 
 ##### 采样率
 ```
-var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // 采样率默认值 16000
+var recorder = AnotherAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // 采样率默认值 16000
 await recorder.initialized;
 ```
 

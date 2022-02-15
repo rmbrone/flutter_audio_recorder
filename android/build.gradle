@@ -1,4 +1,4 @@
-group 'com.zeno.flutter_audio_recorder'
+group 'com.loonix.another_audio_recorder'
 version '0.5.4'
 
 buildscript {

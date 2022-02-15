@@ -1,4 +1,4 @@
-package com.zeno.flutter_audio_recorder;
+package com.loonix.another_audio_recorder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,9 +13,9 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
- * FlutterAudioRecorderPlugin
+ * AnotherAudioRecorderPlugin
  */
-public class FlutterAudioRecorderPlugin implements FlutterPlugin, ActivityAware {
+public class AnotherAudioRecorderPlugin implements FlutterPlugin, ActivityAware {
 
     private MethodChannel methodChannel;
     private MethodCallHandlerImpl methodCallHandler;
@@ -24,7 +24,7 @@ public class FlutterAudioRecorderPlugin implements FlutterPlugin, ActivityAware 
      * Plugin registration.
      */
     public static void registerWith(Registrar registrar) {
-        final FlutterAudioRecorderPlugin plugin = new FlutterAudioRecorderPlugin();
+        final AnotherAudioRecorderPlugin plugin = new AnotherAudioRecorderPlugin();
         plugin.initialize(registrar.context(), registrar.messenger());
 
         if (registrar.activeContext() instanceof Activity) {
@@ -63,7 +63,7 @@ public class FlutterAudioRecorderPlugin implements FlutterPlugin, ActivityAware 
     }
 
     private void initialize(Context applicationContext, BinaryMessenger messenger) {
-        methodChannel = new MethodChannel(messenger, "flutter_audio_recorder");
+        methodChannel = new MethodChannel(messenger, "another_audio_recorder");
         methodCallHandler = new MethodCallHandlerImpl();
         methodChannel.setMethodCallHandler(methodCallHandler);
     }

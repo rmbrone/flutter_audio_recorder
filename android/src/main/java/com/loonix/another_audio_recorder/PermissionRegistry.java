@@ -1,4 +1,4 @@
-package com.zeno.flutter_audio_recorder;
+package com.loonix.another_audio_recorder;
 
 import io.flutter.plugin.common.PluginRegistry;
 

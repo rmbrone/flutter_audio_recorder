@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "flutter_audio_recorder",
+            "name": "another_audio_recorder",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "flutter_audio_recorder (profile mode)",
+            "name": "another_audio_recorder (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

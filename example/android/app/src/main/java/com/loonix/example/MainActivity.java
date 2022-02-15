@@ -1,4 +1,4 @@
-package com.zeno.example;
+package com.loonix.example;
 
 import io.flutter.embedding.android.FlutterActivity;
 

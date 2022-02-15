@@ -1,6 +1,7 @@
-# flutter_audio_recorder
+# another_audio_recorder
+
 <p align="left">
-  <a href="https://pub.dartlang.org/packages/flutter_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/flutter_audio_recorder.svg?style=flat-square"></a>
+  <a href="https://pub.dartlang.org/packages/another_audio_recorder"><img alt="pub version" src="https://img.shields.io/pub/v/another_audio_recorder.svg?style=flat-square"></a>
   <a href="https://github.com/Solido/awesome-flutter">
    <img alt="Awesome Flutter" src="https://img.shields.io/badge/Awesome-Flutter-blue.svg?longCache=true&style=flat-square" />
 </a>
@@ -14,11 +15,11 @@ Flutter Audio Record Plugin that supports `Record` `Pause` `Resume` `Stop` and p
 <img src="https://user-images.githubusercontent.com/10917606/64927086-b2bcda00-d838-11e9-9ab8-bad78a95f02c.gif" width="30%" height="30%" />
 
 #### Code Samples: 
-- [Flutter Application ( using AndroidX )](https://github.com/nikli2009/flutter_audio_recorder_demo/tree/android-x)
-- [Flutter Application ( without AndroidX )](https://github.com/nikli2009/flutter_audio_recorder_demo/tree/non-android-x)
+- [Flutter Application ( using AndroidX )](https://github.com/nikli2009/another_audio_recorder_demo/tree/android-x)
+- [Flutter Application ( without AndroidX )](https://github.com/nikli2009/another_audio_recorder_demo/tree/non-android-x)
 
 ## Installation
-add `flutter_audio_recorder` to your `pubspec.yaml`
+add `another_audio_recorder` to your `pubspec.yaml`
 
 ## iOS Permission 
 1. Add usage description to plist 
@@ -51,25 +52,25 @@ Recommended API Usage: `hasPermission` => `init` > `start` -> (`pause` <-> `resu
 
 #### Always check permission first(it will request permission if permission has not been set to true/false yet, otherwise it will return the result of recording permission)
 ```
-bool hasPermission = await FlutterAudioRecorder.hasPermissions;
+bool hasPermission = await AnotherAudioRecorder.hasPermissions;
 ```
 
 #### `Initialize` (run this before `start`, so we could check if file with given name already exists)
 ```
-var recorder = FlutterAudioRecorder("file_path.mp4"); // .wav .aac .m4a
+var recorder = AnotherAudioRecorder("file_path.mp4"); // .wav .aac .m4a
 await recorder.initialized;
 ```
 
 or 
 
 ```
-var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC); // or AudioFormat.WAV
+var recorder = AnotherAudioRecorder("file_path", audioFormat: AudioFormat.AAC); // or AudioFormat.WAV
 await recorder.initialized;
 ```
 
 ##### Sample Rate
 ```
-var recorder = FlutterAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // sampleRate is 16000 by default
+var recorder = AnotherAudioRecorder("file_path", audioFormat: AudioFormat.AAC, sampleRate: 22000); // sampleRate is 16000 by default
 await recorder.initialized;
 ```
 
@@ -151,3 +152,8 @@ Android and/or iOS.
 For help getting started with Flutter, view our 
 [online documentation](https://flutter.dev/docs), which offers tutorials, 
 samples, guidance on mobile development, and a full API reference.
+
+## Credits
+* This plugin is based on the flutter_audio_recorder, because they stopped updating their plugin and answering/accepting PR's (https://github.com/rmbrone/flutter_audio_recorder)
+* @hnvn - Migrate to Android embedding v2 + Support AAC codec (https://github.com/rmbrone/flutter_audio_recorder/pull/52)
+* @PerrchicK - error handling instead of app crash (https://github.com/rmbrone/flutter_audio_recorder/pull/45/files)
