@@ -23,11 +23,11 @@ class FlutterAudioRecorder {
 
   FlutterAudioRecorder(String path,
       {AudioFormat? audioFormat, int sampleRate = 16000}) {
-    _initRecorder = _init(path, audioFormat, sampleRate);
+    _initRecorder = _init(path, audioFormat!, sampleRate);
   }
 
   /// Initialized recorder instance
-  Future _init(String path, AudioFormat? audioFormat, int sampleRate) async {
+  Future _init(String? path, AudioFormat? audioFormat, int? sampleRate) async {
     String extension;
     String extensionInPath;
     if (path != null) {
@@ -134,13 +134,13 @@ class FlutterAudioRecorder {
   /// Returns the result of record permission
   /// if not determined(app first launch),
   /// this will ask user to whether grant the permission
-  static Future<bool?> get hasPermissions async {
-    bool? hasPermission = await _channel.invokeMethod('hasPermissions');
+  static Future<bool> get hasPermissions async {
+    bool hasPermission = await _channel.invokeMethod('hasPermissions') ?? false;
     return hasPermission;
   }
 
   ///  util - response msg to recording object.
-  void _responseToRecording(Map<String, Object> response) {
+  void _responseToRecording(Map<String, Object>? response) {
     if (response == null) return;
 
     _recording!.duration = new Duration(milliseconds: response['duration'] as int);
