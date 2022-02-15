@@ -143,15 +143,18 @@ class AnotherAudioRecorder {
   void _responseToRecording(Map<String, Object>? response) {
     if (response == null) return;
 
-    _recording!.duration = new Duration(milliseconds: response['duration'] as int);
+    _recording!.duration =
+        new Duration(milliseconds: response['duration'] as int);
     _recording!.path = response['path'] as String?;
-    _recording!.audioFormat = _stringToAudioFormat(response['audioFormat'] as String?);
+    _recording!.audioFormat =
+        _stringToAudioFormat(response['audioFormat'] as String?);
     _recording!.extension = response['audioFormat'] as String?;
     _recording!.metering = new AudioMetering(
         peakPower: response['peakPower'] as double?,
         averagePower: response['averagePower'] as double?,
         isMeteringEnabled: response['isMeteringEnabled'] as bool?);
-    _recording!.status = _stringToRecordingStatus(response['status'] as String?);
+    _recording!.status =
+        _stringToRecordingStatus(response['status'] as String?);
   }
 
   /// util - verify if extension string is supported

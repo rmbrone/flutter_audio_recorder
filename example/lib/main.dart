@@ -36,7 +36,8 @@ class _MyAppState extends State<MyApp> {
 class RecorderExample extends StatefulWidget {
   final LocalFileSystem localFileSystem;
 
-  RecorderExample({localFileSystem}) : this.localFileSystem = localFileSystem ?? LocalFileSystem();
+  RecorderExample({localFileSystem})
+      : this.localFileSystem = localFileSystem ?? LocalFileSystem();
 
   @override
   State<StatefulWidget> createState() => new RecorderExampleState();
@@ -59,67 +60,74 @@ class RecorderExampleState extends State<RecorderExample> {
     return new Center(
       child: new Padding(
         padding: new EdgeInsets.all(8.0),
-        child: new Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+        child: new Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: new FlatButton(
-                  onPressed: () {
-                    switch (_currentStatus) {
-                      case RecordingStatus.Initialized:
-                        {
-                          _start();
-                          break;
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: new FlatButton(
+                      onPressed: () {
+                        switch (_currentStatus) {
+                          case RecordingStatus.Initialized:
+                            {
+                              _start();
+                              break;
+                            }
+                          case RecordingStatus.Recording:
+                            {
+                              _pause();
+                              break;
+                            }
+                          case RecordingStatus.Paused:
+                            {
+                              _resume();
+                              break;
+                            }
+                          case RecordingStatus.Stopped:
+                            {
+                              _init();
+                              break;
+                            }
+                          default:
+                            break;
                         }
-                      case RecordingStatus.Recording:
-                        {
-                          _pause();
-                          break;
-                        }
-                      case RecordingStatus.Paused:
-                        {
-                          _resume();
-                          break;
-                        }
-                      case RecordingStatus.Stopped:
-                        {
-                          _init();
-                          break;
-                        }
-                      default:
-                        break;
-                    }
-                  },
-                  child: _buildText(_currentStatus),
-                  color: Colors.lightBlue,
-                ),
+                      },
+                      child: _buildText(_currentStatus),
+                      color: Colors.lightBlue,
+                    ),
+                  ),
+                  new FlatButton(
+                    onPressed:
+                        _currentStatus != RecordingStatus.Unset ? _stop : null,
+                    child:
+                        new Text("Stop", style: TextStyle(color: Colors.white)),
+                    color: Colors.blueAccent.withOpacity(0.5),
+                  ),
+                  SizedBox(
+                    width: 8,
+                  ),
+                  new FlatButton(
+                    onPressed: onPlayAudio,
+                    child:
+                        new Text("Play", style: TextStyle(color: Colors.white)),
+                    color: Colors.blueAccent.withOpacity(0.5),
+                  ),
+                ],
               ),
-              new FlatButton(
-                onPressed: _currentStatus != RecordingStatus.Unset ? _stop : null,
-                child: new Text("Stop", style: TextStyle(color: Colors.white)),
-                color: Colors.blueAccent.withOpacity(0.5),
-              ),
-              SizedBox(
-                width: 8,
-              ),
-              new FlatButton(
-                onPressed: onPlayAudio,
-                child: new Text("Play", style: TextStyle(color: Colors.white)),
-                color: Colors.blueAccent.withOpacity(0.5),
-              ),
-            ],
-          ),
-          new Text("Status : $_currentStatus"),
-          new Text('Avg Power: ${_current?.metering?.averagePower}'),
-          new Text('Peak Power: ${_current?.metering?.peakPower}'),
-          new Text("File path of the record: ${_current?.path}"),
-          new Text("Format: ${_current?.audioFormat}"),
-          new Text("isMeteringEnabled: ${_current?.metering?.isMeteringEnabled}"),
-          new Text("Extension : ${_current?.extension}"),
-          new Text("Audio recording duration : ${_current?.duration.toString()}")
-        ]),
+              new Text("Status : $_currentStatus"),
+              new Text('Avg Power: ${_current?.metering?.averagePower}'),
+              new Text('Peak Power: ${_current?.metering?.peakPower}'),
+              new Text("File path of the record: ${_current?.path}"),
+              new Text("Format: ${_current?.audioFormat}"),
+              new Text(
+                  "isMeteringEnabled: ${_current?.metering?.isMeteringEnabled}"),
+              new Text("Extension : ${_current?.extension}"),
+              new Text(
+                  "Audio recording duration : ${_current?.duration.toString()}")
+            ]),
       ),
     );
   }
@@ -137,12 +145,15 @@ class RecorderExampleState extends State<RecorderExample> {
         }
 
         // can add extension like ".mp4" ".wav" ".m4a" ".aac"
-        customPath = appDocDirectory.path + customPath + DateTime.now().millisecondsSinceEpoch.toString();
+        customPath = appDocDirectory.path +
+            customPath +
+            DateTime.now().millisecondsSinceEpoch.toString();
 
         // .wav <---> AudioFormat.WAV
         // .mp4 .m4a .aac <---> AudioFormat.AAC
         // AudioFormat is optional, if given value, will overwrite path extension when there is conflicts.
-        _recorder = AnotherAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
+        _recorder =
+            AnotherAudioRecorder(customPath, audioFormat: AudioFormat.WAV);
 
         await _recorder?.initialized;
         // after initialization
@@ -155,7 +166,8 @@ class RecorderExampleState extends State<RecorderExample> {
           print(_currentStatus);
         });
       } else {
-        Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("You must accept permissions")));
+        Scaffold.of(context).showSnackBar(
+            new SnackBar(content: new Text("You must accept permissions")));
       }
     } catch (e) {
       print(e);
