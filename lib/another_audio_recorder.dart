@@ -142,7 +142,8 @@ class AnotherAudioRecorder {
   ///  util - response msg to recording object.
   void _responseToRecording(Map<String, Object>? response) {
     if (response == null) return;
-
+    if (_recording == null) return;
+    
     _recording!.duration =
         new Duration(milliseconds: response['duration'] as int);
     _recording!.path = response['path'] as String?;
