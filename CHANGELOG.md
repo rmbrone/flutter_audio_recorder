@@ -1,3 +1,5 @@
+## 1.0.1
+* Added null check to recording, thanks @electrooz
 ## 1.0.0+1
 * Fix to Dart formatting requirements
 ## 1.0.0

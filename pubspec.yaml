@@ -1,6 +1,6 @@
 name: another_audio_recorder
 description: (Null-Safe + V2) Audio Record Plugin that supports record, pause, resume, stop, and provide access to audio level metering properties average power peak power.
-version: 1.0.0+1
+version: 1.0.1
 homepage: https://github.com/loonix/another_audio_recorder
 
 environment:
