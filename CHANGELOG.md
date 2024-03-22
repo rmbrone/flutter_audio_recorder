@@ -1,3 +1,6 @@
+## 0.6.0
+Fixing output file header for Android & migrate to null safety.
+
 ## 0.5.5
 migrate to Android X.
 

@@ -44,7 +44,7 @@ Flutter 录音插件 支持录音/暂停/继续/停止, 可以在录音的同时
 ## 其他配置
 #### iOS Deployment Target is 8.0
 #### Android
-- 开启AndroidX的项目: 请使用最新版本 (`0.5.x`)
+- 开启AndroidX的项目: 请使用最新版本 (`0.6.x`)
 - 未使用AndroidX的项目: 可以使用旧版本 (`0.4.9`)
 
 ### 注意: iOS Deployment Target 是 8.0

@@ -43,7 +43,7 @@ add `flutter_audio_recorder` to your `pubspec.yaml`
 ## Configuration
 #### iOS Deployment Target is 8.0 above
 #### Android
-- AndroidX: use latest version (`0.5.x`)
+- AndroidX: use latest version (`0.6.x`)
 - Legacy Android: use old version (`0.4.9`)
 
 ## Usage 
